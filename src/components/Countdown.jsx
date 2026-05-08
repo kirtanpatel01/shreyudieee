@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import Button from './Button';
 
 const Countdown = ({ onUnlock }) => {
   const targetDate = new Date('2026-05-11T00:00:00').getTime();
@@ -43,7 +44,7 @@ const Countdown = ({ onUnlock }) => {
       <div className="max-w-4xl w-full text-center px-4">
         {/* Typing Text */}
         <motion.h1 
-          className="text-3xl md:text-5xl font-extralight mb-12 text-rose-100"
+          className="text-4xl md:text-6xl font-bold mb-12 text-rose-100 font-heading"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
@@ -61,7 +62,16 @@ const Countdown = ({ onUnlock }) => {
         </motion.h1>
 
         {/* Countdown Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 relative">
+          {/* Cute element: floating sparkle */}
+          <motion.div
+            className="absolute -top-6 -left-6 text-pink-300 text-2xl"
+            animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            ✦
+          </motion.div>
+          
           {Object.entries(timeLeft).map(([label, value]) => (
             <motion.div
               key={label}
@@ -71,10 +81,10 @@ const Countdown = ({ onUnlock }) => {
               transition={{ duration: 0.5, delay: 0.5 }}
               whileHover={{ scale: 1.05, borderColor: 'rgba(244, 114, 182, 0.4)' }}
             >
-              <span className="text-4xl md:text-6xl font-bold text-rose-300">
+              <span className="text-4xl md:text-6xl font-bold text-rose-300 font-heading">
                 {String(value).padStart(2, '0')}
               </span>
-              <span className="text-sm uppercase tracking-widest text-rose-200/60 mt-2">
+              <span className="text-sm tracking-widest text-rose-200/60 mt-2 font-sans">
                 {label}
               </span>
             </motion.div>
@@ -82,7 +92,7 @@ const Countdown = ({ onUnlock }) => {
         </div>
 
         <motion.p
-          className="text-rose-200/70 text-lg font-light"
+          className="text-rose-200/70 text-lg font-light font-sans"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
@@ -91,23 +101,23 @@ const Countdown = ({ onUnlock }) => {
         </motion.p>
         
         <motion.p
-          className="text-rose-300/50 text-sm mt-2 font-light"
+          className="text-rose-300/80 text-2xl mt-4 font-caveat"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5, duration: 1 }}
         >
-          18 years of chaos loading...
+          18 years of chaos loading... ✨
         </motion.p>
       </div>
 
       {/* Small Unlock Button */}
-      <button
+      <Button
         onClick={onUnlock}
-        className="absolute bottom-6 right-6 text-rose-500/30 hover:text-rose-500/80 transition-colors duration-300 text-sm flex items-center gap-1 cursor-pointer"
+        className="absolute bottom-6 right-6 text-rose-500/30 hover:text-rose-500/80 bg-transparent p-0 flex items-center gap-1"
       >
         <span className="text-lg">♥</span>
         <span>Unlock</span>
-      </button>
+      </Button>
     </div>
   );
 };

@@ -1,5 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import Button from './Button';
+
+const MotionButton = motion(Button);
 
 const WelcomePortal = ({ onNext }) => {
   return (
@@ -11,7 +14,7 @@ const WelcomePortal = ({ onNext }) => {
         className="text-center max-w-4xl"
       >
         <motion.span
-          className="text-rose-400 text-sm uppercase tracking-widest mb-4 block"
+          className="text-rose-400 text-2xl mb-2 block font-caveat"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -20,7 +23,7 @@ const WelcomePortal = ({ onNext }) => {
         </motion.span>
         
         <motion.h1
-          className="text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-rose-300"
+          className="text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-rose-300 font-heading"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
@@ -29,7 +32,7 @@ const WelcomePortal = ({ onNext }) => {
         </motion.h1>
 
         <motion.p
-          className="text-rose-100/80 text-lg md:text-xl font-light mb-12 max-w-2xl mx-auto"
+          className="text-rose-100/80 text-lg md:text-xl font-light mb-12 max-w-2xl mx-auto font-sans"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
@@ -38,7 +41,23 @@ const WelcomePortal = ({ onNext }) => {
         </motion.p>
 
         {/* Floating Photo Placeholders */}
-        <div className="flex justify-center gap-6 mb-16 flex-wrap">
+        <div className="flex justify-center gap-6 mb-16 flex-wrap relative">
+          {/* Cute elements: floating hearts */}
+          <motion.div
+            className="absolute -top-10 right-10 text-rose-400 text-xl"
+            animate={{ y: [0, -10, 0], opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            ♥
+          </motion.div>
+          <motion.div
+            className="absolute bottom-0 left-10 text-pink-400 text-2xl"
+            animate={{ y: [0, 10, 0], opacity: [0.3, 0.8, 0.3] }}
+            transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
+          >
+            ♥
+          </motion.div>
+
           {[1, 2, 3].map((i) => (
             <motion.div
               key={i}
@@ -48,7 +67,7 @@ const WelcomePortal = ({ onNext }) => {
               transition={{ delay: 1.5 + i * 0.2, type: "spring" }}
               whileHover={{ scale: 1.05, rotate: 0 }}
             >
-              <div className="w-full h-full bg-rose-500/10 rounded-lg flex items-center justify-center text-rose-300/30 text-sm">
+              <div className="w-full h-full bg-rose-500/10 rounded-lg flex items-center justify-center text-rose-300/30 text-sm font-sans">
                 Photo {i}
               </div>
               <div className="h-4 w-12 bg-rose-500/20 rounded mt-2" />
@@ -56,8 +75,8 @@ const WelcomePortal = ({ onNext }) => {
           ))}
         </div>
 
-        <motion.button
-          className="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-8 py-3 rounded-full font-medium text-lg hover:shadow-lg hover:shadow-rose-500/30 transition-all duration-300"
+        <MotionButton
+          className="bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
           onClick={onNext}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -66,7 +85,7 @@ const WelcomePortal = ({ onNext }) => {
           whileTap={{ scale: 0.95 }}
         >
           Begin the Journey
-        </motion.button>
+        </MotionButton>
       </motion.div>
     </div>
   );

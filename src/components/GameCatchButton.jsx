@@ -1,30 +1,49 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import Button from './Button';
+
+const MotionButton = motion(Button);
 
 const GameCatchButton = ({ onNext }) => {
-  const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
-  const [clickCount, setClickCount] = useState(0);
-
-  const texts = [
-    "No",
-    "Still no?",
-    "Try harder",
-    "Impossible",
-    "Shreya.exe confused",
-    "Are you clicking?",
-    "Nice try!",
-    "Catch me if you can",
+  const [yesHoverCount, setYesHoverCount] = useState(0);
+  const [isSad, setIsSad] = useState(false);
+  const [yesButtonPos, setYesButtonPos] = useState({ left: '40%', top: '50%' });
+  
+  const yesTexts = [
+    "Yes",
+    "Are you sure?",
+    "Catch me!",
+    "Too slow!",
+    "Not this time",
+    "Try again",
+    "Almost there...",
+    "Okay, fine, click me",
   ];
 
-  const handleNoHover = () => {
-    const x = Math.random() * 200 - 100;
-    const y = Math.random() * 200 - 100;
-    setNoButtonPos({ x, y });
-    setClickCount((prev) => (prev + 1) % texts.length);
+  const handleYesClick = () => {
+    if (yesHoverCount < 7) {
+      const left = `${Math.random() * 70 + 10}%`;
+      const top = `${Math.random() * 70 + 10}%`;
+      setYesButtonPos({ left, top });
+      setYesHoverCount((prev) => prev + 1);
+    } else {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#fda4af', '#f472b6', '#ec4899'],
+      });
+      setTimeout(onNext, 1000);
+    }
   };
 
-  const handleYes = () => {
+  const handleNoClick = () => {
+    setIsSad(true);
+  };
+
+  const handleSadYes = () => {
+    setIsSad(false);
     confetti({
       particleCount: 100,
       spread: 70,
@@ -35,40 +54,91 @@ const GameCatchButton = ({ onNext }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4">
-      <div className="text-center max-w-2xl">
-        <span className="text-rose-400 text-sm uppercase tracking-widest mb-4 block">
-          Memory Journey 2/6
-        </span>
-        
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100">
-          Are you ready for the next step?
-        </h2>
-        <p className="text-rose-200/60 mb-12 font-light">
-          You must agree to proceed.
-        </p>
-
-        <div className="flex gap-4 justify-center items-center h-20 relative">
-          <motion.button
-            className="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-8 py-3 rounded-full font-medium text-lg hover:shadow-lg hover:shadow-rose-500/30 transition-all duration-300"
-            onClick={handleYes}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+    <div className={`min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4 transition-colors duration-1000 ${isSad ? 'bg-neutral-800' : 'bg-transparent'}`}>
+      
+      <AnimatePresence>
+        {!isSad ? (
+          <motion.div 
+            className="text-center max-w-2xl flex flex-col items-center"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            Yes
-          </motion.button>
+            <span className="text-rose-400 text-2xl mb-2 block font-buttons">
+              Memory Journey 2/6
+            </span>
+            
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">
+              Are you ready for the next step?
+            </h2>
+            <p className="text-rose-200/60 mb-12 font-light font-sans">
+              You must agree to proceed. (Yes is a bit shy)
+            </p>
 
-          <motion.button
-            className="bg-neutral-800 border border-rose-500/20 text-rose-200 px-8 py-3 rounded-full font-medium text-lg absolute"
-            style={{ x: noButtonPos.x, y: noButtonPos.y }}
-            onMouseEnter={handleNoHover}
-            animate={{ x: noButtonPos.x, y: noButtonPos.y }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            <div className="flex gap-4 justify-center items-center h-20 relative">
+              {/* Cute element: floating star */}
+              <motion.div
+                className="absolute -top-10 left-1/4 text-yellow-300 text-xl"
+                animate={{ rotate: [0, 360], scale: [1, 1.3, 1] }}
+                transition={{ duration: 4, repeat: Infinity }}
+              >
+                ✦
+              </motion.div>
+
+              {/* No Button - Easy to click */}
+              <Button
+                className="bg-neutral-800 border border-rose-500/20 text-rose-200 hover:bg-neutral-700"
+                onClick={handleNoClick}
+              >
+                No
+              </Button>
+            </div>
+
+            {/* Yes Button - Moves away 7 times */}
+            <MotionButton
+              className="bg-gradient-to-r from-rose-500 to-pink-500 text-white absolute"
+              style={{ left: yesButtonPos.left, top: yesButtonPos.top }}
+              onClick={handleYesClick}
+              animate={{ left: yesButtonPos.left, top: yesButtonPos.top }}
+              transition={{ type: "tween", duration: 0.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {yesTexts[Math.min(yesHoverCount, yesTexts.length - 1)]}
+            </MotionButton>
+            
+            <p className="text-rose-300/50 text-sm mt-4 font-sans">
+              Chased: {yesHoverCount} / 7
+            </p>
+          </motion.div>
+        ) : (
+          <motion.div 
+            className="text-center max-w-2xl bg-neutral-900/90 p-8 rounded-3xl border border-neutral-700 backdrop-blur-lg shadow-2xl shadow-black/50"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
           >
-            {texts[clickCount]}
-          </motion.button>
-        </div>
-      </div>
+            <span className="text-neutral-400 text-4xl mb-4 block font-sans">
+              😢 Oh... I'm so sad...
+            </span>
+            <p className="text-xl md:text-2xl font-light text-neutral-200 leading-relaxed mb-6 font-heading">
+              Don't you wanna see what I made for you? I worked so hard on it...
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Button
+                className="bg-white text-neutral-800 hover:bg-neutral-200 shadow-lg"
+                onClick={handleSadYes}
+              >
+                Yes, I want to see!
+              </Button>
+              <Button
+                className="bg-neutral-700 border border-neutral-600 text-neutral-500 opacity-50 cursor-not-allowed"
+                disabled
+              >
+                No...
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -2,10 +2,17 @@
 
 @theme {
   --color-warm-white: #fdfbf7;
+  --color-primary: #f43f5e;
+  --color-secondary: #fda4af;
+  --color-bg-dark: #171717;
+  
+  --font-sans: 'Shantell Sans', sans-serif;
+  --font-heading: 'Dancing Script', cursive;
+  --font-buttons: 'Fredoka', sans-serif;
 }
 
 @layer base {
   body {
-    @apply bg-neutral-900 text-warm-white;
+    @apply bg-bg-dark text-warm-white;
   }
 }

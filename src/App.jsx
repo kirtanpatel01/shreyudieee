@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Background from './components/Background';
 import Countdown from './components/Countdown';
@@ -16,6 +16,20 @@ function App() {
   const [devMode, setDevMode] = useState(() => {
     return localStorage.getItem('devMode') === 'true';
   });
+  
+  const [isMuted, setIsMuted] = useState(true);
+  
+  const musicMap = {
+    countdown: "IpFX2vq8HKw", // Replace with Blue ID
+    welcome: "5gIpqS-Qpzw", // Replace with Vhalam Aavo Ne ID
+    catch: "ekr2nIex040", // Replace with APT ID
+    quiz: "a7fzkqLozwA", // Replace with I like me better ID
+    hunt: "62TrmUvQGjo", // Replace with Cupid ID
+    hacker: "WGXmDsOwW4k", // Replace with Dhoom Again ID
+    reveal: "GxldQ9eX2wo", // Replace with Until I Found You ID
+  };
+
+  const [currentMusic, setCurrentMusic] = useState(musicMap.welcome);
 
   const targetDate = new Date('2026-05-11T00:00:00').getTime();
 
@@ -57,6 +71,30 @@ function App() {
     };
   }, [devMode, targetDate]);
 
+  useEffect(() => {
+    let music = musicMap.welcome;
+    if (!isUnlocked) {
+      music = musicMap.countdown;
+    } else {
+      switch (currentPage) {
+        case 1: music = musicMap.welcome; break;
+        case 2: music = musicMap.catch; break;
+        case 3: music = musicMap.quiz; break;
+        case 4: music = musicMap.hunt; break;
+        case 5: music = musicMap.hacker; break;
+        case 6: music = musicMap.reveal; break;
+        default: music = musicMap.welcome;
+      }
+    }
+    setCurrentMusic(music);
+  }, [isUnlocked, currentPage]);
+
+
+
+  const toggleMusic = () => {
+    setIsMuted(!isMuted);
+  };
+
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1);
   };
@@ -83,7 +121,15 @@ function App() {
   return (
     <div className="relative min-h-screen bg-neutral-900 overflow-hidden font-sans antialiased">
       <Background />
-      <MusicToggle />
+      <MusicToggle isMuted={isMuted} onToggle={toggleMusic} />
+      
+      {/* Hidden YouTube Player (sized 1x1 to allow autoplay on mobile) */}
+      <iframe
+        src={`https://www.youtube.com/embed/${currentMusic}?autoplay=1&loop=1&playlist=${currentMusic}&mute=${isMuted ? 1 : 0}&enablejsapi=1`}
+        allow="autoplay"
+        className="absolute w-1 h-1 opacity-0 pointer-events-none"
+        title="Music Player"
+      />
 
       {/* Dev Mode Indicator */}
       {devMode && (
