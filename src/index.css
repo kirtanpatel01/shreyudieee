@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --color-warm-white: #fdfbf7;
+}
+
+@layer base {
+  body {
+    @apply bg-neutral-900 text-warm-white;
+  }
+}
