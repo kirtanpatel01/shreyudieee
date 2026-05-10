@@ -1,10 +1,25 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Button from "./Button";
+import { playFairyGlitter, getCtx } from '../utils/sounds';
 
 const MotionButton = motion(Button);
 
 const WelcomePortal = ({ onNext }) => {
+  React.useEffect(() => {
+    const ctx = getCtx();
+    if (ctx.state === 'running') {
+      playFairyGlitter();
+    } else {
+      const handleFirstClick = () => {
+        playFairyGlitter();
+        document.removeEventListener('click', handleFirstClick);
+      };
+      document.addEventListener('click', handleFirstClick);
+      return () => document.removeEventListener('click', handleFirstClick);
+    }
+  }, []);
+
   const photos = [
     {
       name: "bakudieee",

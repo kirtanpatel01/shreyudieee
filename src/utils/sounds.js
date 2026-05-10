@@ -3,9 +3,12 @@
 
 let audioCtx = null;
 
-const getCtx = () => {
+export const getCtx = () => {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
   }
   return audioCtx;
 };
@@ -128,4 +131,77 @@ export const playHackerBeep = () => {
   
   osc.start();
   osc.stop(ctx.currentTime + 0.05);
+};
+
+export const playHappyBirthday = () => {
+  const ctx = getCtx();
+  const now = ctx.currentTime;
+  
+  const playNote = (freq, time, duration) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    // Smooth envelope to sound like a music box
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.2, time + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, time);
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.start(time);
+    osc.stop(time + duration);
+  };
+
+  const notes = [
+    { f: 261.63, d: 0.5 }, // C4
+    { f: 261.63, d: 0.5 }, // C4
+    { f: 293.66, d: 1.0 }, // D4
+    { f: 261.63, d: 1.0 }, // C4
+    { f: 349.23, d: 1.0 }, // F4
+    { f: 329.63, d: 2.0 }, // E4
+    
+    { f: 261.63, d: 0.5 }, // C4
+    { f: 261.63, d: 0.5 }, // C4
+    { f: 293.66, d: 1.0 }, // D4
+    { f: 261.63, d: 1.0 }, // C4
+    { f: 392.00, d: 1.0 }, // G4
+    { f: 349.23, d: 2.0 }, // F4
+    
+    { f: 261.63, d: 0.5 }, // C4
+    { f: 261.63, d: 0.5 }, // C4
+    { f: 523.25, d: 1.0 }, // C5
+    { f: 440.00, d: 1.0 }, // A4
+    { f: 349.23, d: 1.0 }, // F4
+    { f: 329.63, d: 1.0 }, // E4
+    { f: 293.66, d: 2.0 }, // D4
+    
+    { f: 466.16, d: 0.5 }, // Bb4
+    { f: 466.16, d: 0.5 }, // Bb4
+    { f: 440.00, d: 1.0 }, // A4
+    { f: 349.23, d: 1.0 }, // F4
+    { f: 392.00, d: 1.0 }, // G4
+    { f: 349.23, d: 2.0 }, // F4
+  ];
+
+  let currentTime = now + 0.5; // Start after a short delay
+  notes.forEach((note) => {
+    playNote(note.f, currentTime, note.d);
+    currentTime += note.d * 0.8; // Overlap slightly for legato feel
+  });
+};
+
+const fairyGlitterAudio = typeof Audio !== 'undefined' ? new Audio('/sounds/fairy-glitter.wav') : null;
+if (fairyGlitterAudio) {
+  fairyGlitterAudio.preload = 'auto';
+}
+
+export const playFairyGlitter = () => {
+  if (fairyGlitterAudio) {
+    fairyGlitterAudio.currentTime = 0;
+    fairyGlitterAudio.play().catch(e => console.error("Error playing sound:", e));
+  }
 };

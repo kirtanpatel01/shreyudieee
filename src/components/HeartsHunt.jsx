@@ -8,7 +8,7 @@ const HeartsHunt = ({ onNext }) => {
   const [foundHearts, setFoundHearts] = useState([]);
   const [activeHeart, setActiveHeart] = useState(null);
   const [showQuitMsg, setShowQuitMsg] = useState(false);
-  const totalHearts = 5;
+  const totalHearts = 7;
 
   const heartsData = [
     { 
@@ -31,14 +31,37 @@ const HeartsHunt = ({ onNext }) => {
       id: 5, top: '15%', left: '85%', dir: 'bottom',
       msg: "Wow, you actually found this! I thought your short height would block your vision. Bakudieee! 😂" 
     },
+    { 
+      id: 6, top: '50%', left: '50%', dir: 'bottom',
+      msg: "You are the most dramatic person I know, but I wouldn't have it any other way! 🎭😂" 
+    },
+    { 
+      id: 7, top: '60%', left: '85%', dir: 'top',
+      msg: "Here is a heart just for being you. Stay chaotic, Shreyudieee! ✨💖" 
+    },
   ];
+
+  const heartSounds = {
+    1: '/sounds/cartoon-character-sneeze.wav',
+    2: '/sounds/funny-clown-horn.wav',
+    3: '/sounds/funny-giggling.wav',
+    4: '/sounds/little-cat-pain-meow.wav',
+    5: '/sounds/monster-attack-dog-wolf-creature.wav',
+    6: '/sounds/soft-quick-punch.wav',
+    7: '/sounds/sweet-kitty-meow.wav'
+  };
 
   const handleHeartClick = (id) => {
     setActiveHeart(id);
     if (!foundHearts.includes(id)) {
       const newFound = [...foundHearts, id];
       setFoundHearts(newFound);
-      playCorrect();
+      
+      const sound = heartSounds[id];
+      if (sound) {
+        const audio = new Audio(sound);
+        audio.play().catch(e => console.error(e));
+      }
       
       confetti({
         particleCount: 20,

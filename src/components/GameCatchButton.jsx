@@ -268,7 +268,7 @@ const GameCatchButton = ({ onNext }) => {
               <div className="flex gap-2 w-full">
                 <Button
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-rose-500 to-pink-500 text-white py-3 rounded-xl hover:shadow-lg hover:shadow-rose-500/30 transition-shadow font-buttons"
+                  className="flex-1 bg-linear-to-r from-rose-500 to-pink-500 text-white py-3 rounded-xl hover:shadow-lg hover:shadow-rose-500/30 transition-shadow font-buttons"
                 >
                   Submit Guess
                 </Button>

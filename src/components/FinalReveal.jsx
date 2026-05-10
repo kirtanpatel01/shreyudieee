@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import { playHappyBirthday } from '../utils/sounds';
 
 const FinalReveal = () => {
   React.useEffect(() => {
+    playHappyBirthday();
     const duration = 15 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
