@@ -13,23 +13,23 @@ const HeartsHunt = ({ onNext }) => {
   const heartsData = [
     { 
       id: 1, top: '25%', left: '15%', dir: 'bottom',
-      msg: "Thanks for always listening and never judging me. You're the best friend I could ask for! 💖" 
+      msg: "Even though we are faaar away and rarely meet, sharing our good and bad days makes me feel you're right here. 💖" 
     },
     { 
       id: 2, top: '70%', left: '25%', dir: 'top',
-      msg: "Stop sending me food reels when I'm hungry! You're making me fat... oh wait, you already tease me for that! 🙄🍔" 
+      msg: "Stop saving all my ugly snaps! And yes, I will keep replying to every single reel you send. 🙄" 
     },
     { 
       id: 3, top: '35%', left: '75%', dir: 'top',
-      msg: "I had to place this heart low so you could reach it, Shortieee! 😜📏" 
+      msg: "From sharing our best days to complaining about the worst, thanks for being my favorite online memory. 📱" 
     },
     { 
       id: 4, top: '80%', left: '70%', dir: 'top',
-      msg: "Thanks for sharing your terrible 90's music taste with me. Jk, they are bops! 🎵😆" 
+      msg: "We might just be 'close friends' for now, but you know me better than anyone else. Stay chaotic! ✨" 
     },
     { 
       id: 5, top: '15%', left: '85%', dir: 'bottom',
-      msg: "Wow, you actually found this! I thought your short height would block your vision. Bakudieee! 😂" 
+      msg: "Another reel incoming in 3... 2... 1... Get ready to reply! 😂" 
     },
   ];
 
@@ -96,63 +96,61 @@ const HeartsHunt = ({ onNext }) => {
         )}
       </div>
 
-      {/* Interactive Map Area */}
-      <div className="relative w-full max-w-4xl h-[500px] bg-neutral-900/50 backdrop-blur-sm border border-rose-500/10 rounded-2xl overflow-hidden shadow-2xl shadow-rose-500/5">
-        {heartsData.map((heart) => {
-          const isFound = foundHearts.includes(heart.id);
-          const isActive = activeHeart === heart.id;
+      {/* Hearts are now scattered directly on the page container, not inside a box */}
+      {heartsData.map((heart) => {
+        const isFound = foundHearts.includes(heart.id);
+        const isActive = activeHeart === heart.id;
 
-          return (
-            <div
-              key={heart.id}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2"
-              style={{ top: heart.top, left: heart.left }}
+        return (
+          <div
+            key={heart.id}
+            className="absolute transform -translate-x-1/2 -translate-y-1/2"
+            style={{ top: heart.top, left: heart.left }}
+          >
+            <motion.div
+              className={`cursor-pointer text-2xl ${isFound ? 'text-rose-500' : 'text-rose-500/5 hover:text-rose-500/20'} transition-colors duration-300`}
+              onClick={() => handleHeartClick(heart.id)}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
             >
-              <motion.div
-                className={`cursor-pointer text-2xl ${isFound ? 'text-rose-500' : 'text-rose-500/5 hover:text-rose-500/20'} transition-colors duration-300`}
-                onClick={() => handleHeartClick(heart.id)}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                ♥
-              </motion.div>
+              ♥
+            </motion.div>
 
-              <AnimatePresence>
-                {isActive && isFound && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8, y: heart.dir === 'top' ? -20 : 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className={`absolute z-20 w-48 bg-neutral-800 border border-rose-500/30 rounded-xl p-3 text-xs text-rose-100 shadow-xl ${
-                      heart.dir === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
-                    } left-1/2 transform -translate-x-1/2`}
+            <AnimatePresence>
+              {isActive && isFound && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, y: heart.dir === 'top' ? -20 : 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className={`absolute z-20 w-48 bg-neutral-800 border border-rose-500/30 rounded-xl p-3 text-xs text-rose-100 shadow-xl ${
+                    heart.dir === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
+                  } left-1/2 transform -translate-x-1/2 relative`}
+                >
+                  <div className="absolute w-2 h-2 bg-neutral-800 border-t border-l border-rose-500/30 transform rotate-45" 
+                    style={{ 
+                      left: '50%', 
+                      marginLeft: '-4px',
+                      bottom: heart.dir === 'top' ? '-5px' : 'auto',
+                      top: heart.dir === 'top' ? 'auto' : '-5px',
+                      borderBottom: heart.dir === 'top' ? 'none' : 'auto',
+                      borderRight: heart.dir === 'top' ? 'none' : 'auto',
+                      borderTop: heart.dir === 'top' ? 'auto' : 'none',
+                      borderLeft: heart.dir === 'top' ? 'auto' : 'none',
+                    }} 
+                  />
+                  <p className="font-sans leading-relaxed pr-4">{heart.msg}</p>
+                  <button 
+                    className="absolute top-2 right-2 text-rose-400 hover:text-rose-300 font-medium"
+                    onClick={() => setActiveHeart(null)}
                   >
-                    <div className="absolute w-2 h-2 bg-neutral-800 border-t border-l border-rose-500/30 transform rotate-45" 
-                      style={{ 
-                        left: '50%', 
-                        marginLeft: '-4px',
-                        bottom: heart.dir === 'top' ? '-5px' : 'auto',
-                        top: heart.dir === 'top' ? 'auto' : '-5px',
-                        borderBottom: heart.dir === 'top' ? 'none' : 'auto',
-                        borderRight: heart.dir === 'top' ? 'none' : 'auto',
-                        borderTop: heart.dir === 'top' ? 'auto' : 'none',
-                        borderLeft: heart.dir === 'top' ? 'auto' : 'none',
-                      }} 
-                    />
-                    <p className="font-sans leading-relaxed">{heart.msg}</p>
-                    <button 
-                      className="mt-2 text-rose-400 hover:text-rose-300 font-medium"
-                      onClick={() => setActiveHeart(null)}
-                    >
-                      Close
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-      </div>
+                    ✕
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
 
       {foundHearts.length === totalHearts && (
         <motion.div
