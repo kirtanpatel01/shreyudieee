@@ -38,16 +38,16 @@ const FinalReveal = () => {
         </span>
         
         <motion.h1
-          className="text-6xl md:text-8xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-rose-300 font-heading"
+          className="text-6xl md:text-8xl font-bold mb-8 text-transparent bg-clip-text bg-linear-to-r from-rose-300 via-pink-200 to-rose-300 font-heading"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5, type: "spring" }}
         >
-          Happy 18th Birthday, Shreya!
+          Happy Birthday, My one and only dearest & the most adorable Mahila Mittar Shreya!
         </motion.h1>
 
         <motion.div
-          className="bg-neutral-800/40 backdrop-blur-lg border border-rose-500/20 rounded-3xl p-8 md:p-12 mb-16 relative"
+          className="bg-neutral-800/40 backdrop-blur-lg border border-rose-500/20 rounded-3xl p-8 md:p-12 mb-16 relative mt-6"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
@@ -62,10 +62,10 @@ const FinalReveal = () => {
           </motion.div>
 
           <p className="text-xl md:text-2xl font-light text-rose-100 leading-relaxed mb-6 font-sans">
-            May this year be filled with laughter, love, and all the chaos you can handle. You are special, and today is all about celebrating you.
+            
           </p>
           <p className="text-rose-200/80 font-light leading-relaxed font-sans">
-            From the bottom of our hearts, we wish you the happiest of birthdays. Welcome to adulthood (officially)!
+            From the bottom of my heart i wish you the happiest of birthdays. May you get everything you desire and may you always be happy.
           </p>
         </motion.div>
 

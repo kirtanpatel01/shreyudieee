@@ -95,7 +95,7 @@ const FakeHacker = ({ onNext }) => {
           </div>
           <div className="w-full h-2 bg-neutral-900 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-rose-500 to-pink-500"
+              className="h-full bg-linear-to-r from-rose-500 to-pink-500"
               style={{ width: `${progress}%` }}
               initial={{ width: '0%' }}
               animate={{ width: `${progress}%` }}
@@ -115,7 +115,7 @@ const FakeHacker = ({ onNext }) => {
             You are officially 18 now.
           </p>
           <Button
-            className="bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
+            className="bg-linear-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
             onClick={onNext}
           >
             See the Final Reveal

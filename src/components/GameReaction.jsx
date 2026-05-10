@@ -183,7 +183,7 @@ const GameReaction = ({ onNext }) => {
         {state === 'clicked' && reactionTime < 500 && (
           <Button
             onClick={onNext}
-            className="bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
+            className="bg-linear-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
           >
             Continue
           </Button>

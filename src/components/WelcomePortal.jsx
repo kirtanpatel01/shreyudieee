@@ -22,15 +22,15 @@ const WelcomePortal = ({ onNext }) => {
 
   const photos = [
     {
-      name: "bakudieee",
+      name: "bakudieee 🥹",
       src: "/bakudieee.jpg",
     },
     {
-      name: "cutieee",
+      name: "butkieee 😚",
       src: "/cutieee.jpg",
     },
     {
-      name: "shreyudieee",
+      name: "shreyudieee 😋",
       src: "/shreyudieee.jpg",
     },
   ];

@@ -21,7 +21,7 @@ const HeartsHunt = ({ onNext }) => {
     },
     { 
       id: 3, top: '35%', left: '75%', dir: 'top',
-      msg: "From sharing our best days to complaining about the worst, thanks for being my favorite online memory. 📱" 
+      msg: "I'm not good at expressing my feelings, but I hope you know that I care about you. ❤️" 
     },
     { 
       id: 4, top: '80%', left: '70%', dir: 'top',
@@ -29,7 +29,7 @@ const HeartsHunt = ({ onNext }) => {
     },
     { 
       id: 5, top: '15%', left: '85%', dir: 'bottom',
-      msg: "Another reel incoming in 3... 2... 1... Get ready to reply! 😂" 
+      msg: "Sorry for sometimmes doesn't meeting your expectations, but I'll try my best! ❤️" 
     },
   ];
 
@@ -162,7 +162,7 @@ const HeartsHunt = ({ onNext }) => {
             You found them all!
           </p>
           <Button
-            className="bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
+            className="bg-linear-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
             onClick={onNext}
           >
             Continue Journey
