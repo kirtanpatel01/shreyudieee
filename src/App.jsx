@@ -4,6 +4,8 @@ import Background from './components/Background';
 import Countdown from './components/Countdown';
 import WelcomePortal from './components/WelcomePortal';
 import GameCatchButton from './components/GameCatchButton';
+import MemoryQuiz from './components/MemoryQuiz';
+import HeartsHunt from './components/HeartsHunt';
 import GameReaction from './components/GameReaction';
 import FakeHacker from './components/FakeHacker';
 import FinalReveal from './components/FinalReveal';
@@ -22,8 +24,9 @@ function App() {
     countdown: "IpFX2vq8HKw", // Replace with Blue ID
     welcome: "5gIpqS-Qpzw", // Replace with Vhalam Aavo Ne ID
     catch: "ekr2nIex040", // Replace with APT ID
-    reaction: "a7fzkqLozwA", // Replace with I like me better ID
-    scratch: "62TrmUvQGjo", // Replace with Cupid ID
+    quiz: "a7fzkqLozwA", // Replace with I like me better ID
+    hunt: "62TrmUvQGjo", // Replace with Cupid ID
+    reaction: "a7fzkqLozwA", // Reaction game music
     hacker: "WGXmDsOwW4k", // Replace with Dhoom Again ID
     reveal: "GxldQ9eX2wo", // Replace with Until I Found You ID
   };
@@ -79,8 +82,10 @@ function App() {
         case 1: music = musicMap.welcome; break;
         case 2: music = musicMap.catch; break;
         case 3: music = musicMap.reaction; break;
-        case 4: music = musicMap.hacker; break;
-        case 5: music = musicMap.reveal; break;
+        case 4: music = musicMap.quiz; break;
+        case 5: music = musicMap.hunt; break;
+        case 6: music = musicMap.hacker; break;
+        case 7: music = musicMap.reveal; break;
         default: music = musicMap.welcome;
       }
     }
@@ -106,8 +111,12 @@ function App() {
       case 3:
         return <GameReaction onNext={handleNextPage} />;
       case 4:
-        return <FakeHacker onNext={handleNextPage} />;
+        return <MemoryQuiz onNext={handleNextPage} />;
       case 5:
+        return <HeartsHunt onNext={handleNextPage} />;
+      case 6:
+        return <FakeHacker onNext={handleNextPage} />;
+      case 7:
         return <FinalReveal />;
       default:
         return <WelcomePortal onNext={handleNextPage} />;
