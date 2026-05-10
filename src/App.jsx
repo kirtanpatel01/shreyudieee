@@ -107,12 +107,10 @@ function App() {
       case 2:
         return <GameCatchButton onNext={handleNextPage} />;
       case 3:
-        return <GameReaction onNext={handleNextPage} />;
-      case 4:
         return <HeartsHunt onNext={handleNextPage} />;
-      case 5:
+      case 4:
         return <FakeHacker onNext={handleNextPage} />;
-      case 6:
+      case 5:
         return <FinalReveal />;
       default:
         return <WelcomePortal onNext={handleNextPage} />;

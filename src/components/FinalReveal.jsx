@@ -34,7 +34,7 @@ const FinalReveal = () => {
     <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4 py-20">
       <div className="text-center max-w-4xl w-full">
         <span className="text-rose-400 text-2xl mb-2 block font-caveat">
-          Memory Journey 6/6
+          5/5
         </span>
         
         <motion.h1

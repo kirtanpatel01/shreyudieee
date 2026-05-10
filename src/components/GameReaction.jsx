@@ -137,7 +137,7 @@ const GameReaction = ({ onNext }) => {
     <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4">
       <div className="text-center max-w-2xl w-full mb-8">
         <span className="text-rose-400 text-2xl mb-2 block font-buttons">
-          Memory Journey 3/6
+          3/6
         </span>
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">
           Reaction Speed Challenge

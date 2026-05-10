@@ -53,7 +53,7 @@ const FakeHacker = ({ onNext }) => {
     <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4">
       <div className="text-center max-w-2xl w-full mb-8">
         <span className="text-rose-400 text-2xl mb-2 block font-caveat">
-          Memory Journey 5/6
+          4/5
         </span>
       </div>
 

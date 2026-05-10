@@ -64,7 +64,7 @@ const HeartsHunt = ({ onNext }) => {
     <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4">
       <div className="text-center max-w-2xl w-full mb-12">
         <span className="text-rose-400 text-2xl mb-2 block font-buttons">
-          Memory Journey 4/6
+          3/5
         </span>
         
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">

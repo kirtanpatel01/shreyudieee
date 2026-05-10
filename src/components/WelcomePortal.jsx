@@ -48,7 +48,7 @@ const WelcomePortal = ({ onNext }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          Memory Journey 1/6
+          1/5
         </motion.span>
 
         <motion.h1
