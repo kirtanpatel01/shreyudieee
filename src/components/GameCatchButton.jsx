@@ -6,9 +6,16 @@ import Button from './Button';
 const GameCatchButton = ({ onNext }) => {
   const [gameStep, setGameStep] = useState(0);
   const [heartsCaught, setHeartsCaught] = useState(0);
-  const [quizAnswer, setQuizAnswer] = useState('');
   
-  // Falling hearts state
+  // Step 2 state
+  const [holdProgress, setHoldProgress] = useState(0);
+  const [isHolding, setIsHolding] = useState(false);
+  
+  // Step 3 state
+  const [nextLetterIndex, setNextLetterIndex] = useState(0);
+  const letters = ['S', 'H', 'R', 'E', 'Y', 'A'];
+  
+  // Falling hearts state (Step 0)
   const [fallingHearts, setFallingHearts] = useState([]);
 
   // Spawn falling hearts for Step 0
@@ -20,13 +27,33 @@ const GameCatchButton = ({ onNext }) => {
           {
             id: Math.random(),
             left: `${Math.random() * 80 + 10}%`,
-            duration: Math.random() * 2 + 2, // 2-4 seconds
+            duration: Math.random() * 2 + 2,
           },
         ]);
       }, 800);
       return () => clearInterval(interval);
     }
   }, [gameStep]);
+
+  // Step 2 Hold Logic
+  useEffect(() => {
+    let interval;
+    if (isHolding && gameStep === 1) {
+      interval = setInterval(() => {
+        setHoldProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setTimeout(() => setGameStep(2), 500);
+            return 100;
+          }
+          return prev + 2; // Fills in ~1.5 seconds
+        });
+      }, 30);
+    } else {
+      setHoldProgress(0);
+    }
+    return () => clearInterval(interval);
+  }, [isHolding, gameStep]);
 
   const handleCatchHeart = (id) => {
     setFallingHearts((prev) => prev.filter((h) => h.id !== id));
@@ -37,12 +64,16 @@ const GameCatchButton = ({ onNext }) => {
     }
   };
 
-  const handleQuizSubmit = (e) => {
-    e.preventDefault();
-    if (quizAnswer.toLowerCase() === 'forever' || quizAnswer.toLowerCase() === 'shreya') {
-      triggerWin();
+  const handleLetterClick = (letter) => {
+    if (letter === letters[nextLetterIndex]) {
+      const next = nextLetterIndex + 1;
+      setNextLetterIndex(next);
+      if (next >= letters.length) {
+        triggerWin();
+      }
     } else {
-      alert("Hint: It starts with 'S' or it's how long I'll love you!");
+      // Wrong letter! Reset.
+      setNextLetterIndex(0);
     }
   };
 
@@ -55,6 +86,14 @@ const GameCatchButton = ({ onNext }) => {
     });
     setTimeout(onNext, 1000);
   };
+
+  // Randomize letters for Step 3
+  const [shuffledLetters, setShuffledLetters] = useState([]);
+  useEffect(() => {
+    if (gameStep === 2) {
+      setShuffledLetters([...letters].sort(() => Math.random() - 0.5));
+    }
+  }, [gameStep]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4 bg-transparent overflow-hidden">
@@ -98,7 +137,7 @@ const GameCatchButton = ({ onNext }) => {
           </motion.div>
         )}
 
-        {/* STEP 1: SLIDE TO UNLOCK */}
+        {/* STEP 1: HOLD TO FILL */}
         {gameStep === 1 && (
           <motion.div
             key="step1"
@@ -109,31 +148,43 @@ const GameCatchButton = ({ onNext }) => {
             transition={{ duration: 0.3 }}
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 2: The Commitment</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Slide to Unlock the Next Step</h2>
-            <p className="text-rose-200/60 mb-12 font-sans font-light">Prove your patience...</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Press and Hold the Heart</h2>
+            <p className="text-rose-200/60 mb-12 font-sans font-light">Hold for 3 seconds. Don't let go!</p>
             
-            <div className="w-64 h-14 bg-neutral-800/80 rounded-full border border-rose-500/20 flex items-center px-1 relative">
+            <div className="relative w-32 h-32 flex items-center justify-center">
+              {/* Progress Ring */}
+              <div className="absolute inset-0 rounded-full border-4 border-neutral-800"></div>
+              <svg className="absolute inset-0 w-full h-full rotate-[-90deg]">
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="60"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="transparent"
+                  className="text-rose-500"
+                  strokeDasharray="377"
+                  strokeDashoffset={377 - (377 * holdProgress) / 100}
+                  style={{ transition: 'stroke-dashoffset 0.1s linear' }}
+                />
+              </svg>
+              
               <motion.div
-                className="w-12 h-12 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-xl cursor-grab active:cursor-grabbing z-10"
-                drag="x"
-                dragConstraints={{ left: 0, right: 200 }}
-                dragElastic={0.1}
-                onDragEnd={(e, info) => {
-                  if (info.offset.x > 150) {
-                    setGameStep(2);
-                  }
-                }}
+                className="text-5xl cursor-pointer select-none"
+                animate={{ scale: isHolding ? 1.2 : 1 }}
+                onTouchStart={() => setIsHolding(true)}
+                onTouchEnd={() => setIsHolding(false)}
+                onMouseDown={() => setIsHolding(true)}
+                onMouseUp={() => setIsHolding(false)}
+                onMouseLeave={() => setIsHolding(false)}
               >
                 ❤️
               </motion.div>
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-rose-200/30 text-sm font-sans">
-                Slide Right &gt;&gt;&gt;
-              </div>
             </div>
           </motion.div>
         )}
 
-        {/* STEP 2: THE QUIZ */}
+        {/* STEP 2: SPELL THE NAME */}
         {gameStep === 2 && (
           <motion.div
             key="step2"
@@ -144,24 +195,32 @@ const GameCatchButton = ({ onNext }) => {
             transition={{ duration: 0.3 }}
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 3: The Knowledge Test</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Answer the Riddle</h2>
-            <p className="text-rose-200/60 mb-6 font-sans font-light">What is the magic word? (Hint: Your name or 'Forever')</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Spell Her Name in Order</h2>
+            <p className="text-rose-200/60 mb-6 font-sans font-light">Tap the letters in the correct order.</p>
             
-            <form onSubmit={handleQuizSubmit} className="flex flex-col gap-4 w-full">
-              <input
-                type="text"
-                className="bg-neutral-800/50 border border-rose-500/20 rounded-xl px-4 py-3 text-center text-white focus:outline-none focus:border-rose-500 font-sans"
-                placeholder="Type here..."
-                value={quizAnswer}
-                onChange={(e) => setQuizAnswer(e.target.value)}
-              />
-              <Button
-                type="submit"
-                className="bg-gradient-to-r from-rose-500 to-pink-500 text-white py-3 rounded-xl hover:shadow-lg hover:shadow-rose-500/30 transition-shadow font-buttons"
-              >
-                Submit Answer
-              </Button>
-            </form>
+            <div className="flex gap-4 flex-wrap justify-center mb-8">
+              {shuffledLetters.map((letter, index) => {
+                const isCorrect = letters.indexOf(letter) < nextLetterIndex;
+                return (
+                  <motion.div
+                    key={index}
+                    className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold font-heading cursor-pointer border ${
+                      isCorrect 
+                        ? 'bg-rose-500 text-white border-rose-400' 
+                        : 'bg-neutral-800 text-rose-100 border-rose-500/20'
+                    }`}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleLetterClick(letter)}
+                  >
+                    {letter}
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <div className="text-sm text-rose-300/50 font-sans">
+              Next letter needed: <span className="text-rose-300 font-bold">{letters[nextLetterIndex]}</span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
