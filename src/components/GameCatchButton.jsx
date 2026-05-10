@@ -7,9 +7,9 @@ const GameCatchButton = ({ onNext }) => {
   const [gameStep, setGameStep] = useState(0);
   const [heartsCaught, setHeartsCaught] = useState(0);
   
-  // Step 2 state
-  const [holdProgress, setHoldProgress] = useState(0);
-  const [isHolding, setIsHolding] = useState(false);
+  // Step 2 (Whack-a-Mole) state
+  const [whackCount, setWhackCount] = useState(0);
+  const [molePos, setMolePos] = useState({ left: '50%', top: '50%' });
   
   // Step 3 state
   const [nextLetterIndex, setNextLetterIndex] = useState(0);
@@ -35,32 +35,26 @@ const GameCatchButton = ({ onNext }) => {
     }
   }, [gameStep]);
 
-  // Step 2 Hold Logic
-  useEffect(() => {
-    let interval;
-    if (isHolding && gameStep === 1) {
-      interval = setInterval(() => {
-        setHoldProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setTimeout(() => setGameStep(2), 500);
-            return 100;
-          }
-          return prev + 2; // Fills in ~1.5 seconds
-        });
-      }, 30);
-    } else {
-      setHoldProgress(0);
-    }
-    return () => clearInterval(interval);
-  }, [isHolding, gameStep]);
-
   const handleCatchHeart = (id) => {
     setFallingHearts((prev) => prev.filter((h) => h.id !== id));
     const newCount = heartsCaught + 1;
     setHeartsCaught(newCount);
     if (newCount >= 5) {
       setTimeout(() => setGameStep(1), 500);
+    }
+  };
+
+  const handleWhackMole = () => {
+    const newCount = whackCount + 1;
+    setWhackCount(newCount);
+    
+    if (newCount >= 5) {
+      setTimeout(() => setGameStep(2), 500);
+    } else {
+      // Pick a new random position avoiding the center where the text is
+      const left = Math.random() > 0.5 ? `${Math.random() * 30 + 5}%` : `${Math.random() * 30 + 65}%`;
+      const top = Math.random() > 0.5 ? `${Math.random() * 30 + 5}%` : `${Math.random() * 30 + 65}%`;
+      setMolePos({ left, top });
     }
   };
 
@@ -72,7 +66,6 @@ const GameCatchButton = ({ onNext }) => {
         triggerWin();
       }
     } else {
-      // Wrong letter! Reset.
       setNextLetterIndex(0);
     }
   };
@@ -137,7 +130,7 @@ const GameCatchButton = ({ onNext }) => {
           </motion.div>
         )}
 
-        {/* STEP 1: HOLD TO FILL */}
+        {/* STEP 1: WHACK A MOLE */}
         {gameStep === 1 && (
           <motion.div
             key="step1"
@@ -147,40 +140,24 @@ const GameCatchButton = ({ onNext }) => {
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.3 }}
           >
-            <span className="text-rose-400 text-xl mb-2 font-buttons">Step 2: The Commitment</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Press and Hold the Heart</h2>
-            <p className="text-rose-200/60 mb-12 font-sans font-light">Hold for 3 seconds. Don't let go!</p>
+            <span className="text-rose-400 text-xl mb-2 font-buttons">Step 2: The Speed Test</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Tap the Teleporting Heart!</h2>
+            <p className="text-rose-200/60 mb-12 font-sans font-light">Tap it 5 times. It's fast!</p>
             
-            <div className="relative w-32 h-32 flex items-center justify-center">
-              {/* Progress Ring */}
-              <div className="absolute inset-0 rounded-full border-4 border-neutral-800"></div>
-              <svg className="absolute inset-0 w-full h-full rotate-[-90deg]">
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="60"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="transparent"
-                  className="text-rose-500"
-                  strokeDasharray="377"
-                  strokeDashoffset={377 - (377 * holdProgress) / 100}
-                  style={{ transition: 'stroke-dashoffset 0.1s linear' }}
-                />
-              </svg>
-              
-              <motion.div
-                className="text-5xl cursor-pointer select-none"
-                animate={{ scale: isHolding ? 1.2 : 1 }}
-                onTouchStart={() => setIsHolding(true)}
-                onTouchEnd={() => setIsHolding(false)}
-                onMouseDown={() => setIsHolding(true)}
-                onMouseUp={() => setIsHolding(false)}
-                onMouseLeave={() => setIsHolding(false)}
-              >
-                ❤️
-              </motion.div>
+            <div className="text-5xl font-bold text-rose-300 font-heading mb-8">
+              {whackCount} / 5
             </div>
+
+            <motion.div
+              className="text-5xl cursor-pointer select-none absolute"
+              style={{ left: molePos.left, top: molePos.top }}
+              onClick={handleWhackMole}
+              onTouchStart={handleWhackMole}
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 0.2 }}
+            >
+              ❤️
+            </motion.div>
           </motion.div>
         )}
 

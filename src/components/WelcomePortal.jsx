@@ -73,11 +73,11 @@ const WelcomePortal = ({ onNext }) => {
             ♥
           </motion.div>
 
-          <div className="flex gap-10 flex-wrap">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-10">
             {photos.map((photo, i) => (
               <motion.div
                 key={photo.name}
-                className="max-w-44 bg-neutral-800/60 backdrop-blur-md border border-rose-500/20 rounded-xl flex flex-col items-center justify-center"
+                className="w-36 sm:w-44 bg-neutral-800/60 backdrop-blur-md border border-rose-500/20 rounded-xl flex flex-col items-center justify-center"
                 initial={{ opacity: 0, y: 50, rotate: i % 2 === 0 ? 5 : -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.2, type: "spring" }}
@@ -86,9 +86,9 @@ const WelcomePortal = ({ onNext }) => {
                 <img
                   src={photo.src}
                   alt={photo.name}
-                  className="rounded-t-xl h-full w-full object-cover"
+                  className="rounded-t-xl h-36 sm:h-44 w-full object-cover"
                 />
-                <div className="px-2 bg-rose-500/20 rounded my-2">
+                <div className="px-2 bg-rose-500/20 rounded my-2 text-sm sm:text-base">
                   {photo.name}
                 </div>
               </motion.div>
