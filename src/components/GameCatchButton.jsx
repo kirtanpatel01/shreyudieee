@@ -95,7 +95,6 @@ const GameCatchButton = ({ onNext }) => {
       triggerWin();
     } else if (newGuesses.length >= 6) {
       setGameOver(true);
-      alert(`Game Over! The word was ${targetWord}. Resetting tries...`);
       setGuesses([]);
     }
   };
