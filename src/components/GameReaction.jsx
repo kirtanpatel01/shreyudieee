@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './Button';
 import confetti from 'canvas-confetti';
+import { playHackerBeep, playWin, playCorrect, playWrong } from '../utils/sounds';
 
 const GameReaction = ({ onNext }) => {
   const [state, setState] = useState('idle'); // idle, waiting, ready, clicked, too-early, trolled
@@ -28,10 +29,12 @@ const GameReaction = ({ onNext }) => {
         trollTimerRef.current = setTimeout(() => {
           setState('ready');
           setStartTime(Date.now());
+          playHackerBeep();
         }, 1500);
       } else {
         setState('ready');
         setStartTime(Date.now());
+        playHackerBeep();
       }
     }, delay);
   };
@@ -41,6 +44,7 @@ const GameReaction = ({ onNext }) => {
       clearTimeout(timerRef.current);
       setState('too-early');
       setAttempts(attempts + 1);
+      playWrong();
     } else if (state === 'ready') {
       const time = Date.now() - startTime;
       setReactionTime(time);
@@ -48,17 +52,23 @@ const GameReaction = ({ onNext }) => {
       setAttempts(attempts + 1);
       
       if (time < 300) {
+        playWin();
         confetti({
           particleCount: 50,
           spread: 60,
           origin: { y: 0.6 },
           colors: ['#10b981', '#34d399'],
         });
+      } else if (time >= 400) {
+        playWrong();
+      } else {
+        playCorrect();
       }
     } else if (state === 'trolled') {
       clearTimeout(trollTimerRef.current);
       setState('too-early');
       setAttempts(attempts + 1);
+      playWrong();
     }
   };
 

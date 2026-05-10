@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Button from './Button';
+import { playHackerBeep, playWin } from '../utils/sounds';
 
 const FakeHacker = ({ onNext }) => {
   const [logs, setLogs] = useState([]);
@@ -24,6 +25,7 @@ const FakeHacker = ({ onNext }) => {
       if (currentLogIndex < fullLogs.length) {
         setLogs((prev) => [...prev, fullLogs[currentLogIndex]]);
         currentLogIndex++;
+        playHackerBeep();
       } else {
         clearInterval(logInterval);
       }
@@ -36,6 +38,7 @@ const FakeHacker = ({ onNext }) => {
         }
         clearInterval(progressInterval);
         setIsDone(true);
+        playWin();
         return 100;
       });
     }, 100);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import Button from './Button';
+import { playCorrect, playWin } from '../utils/sounds';
 
 const HeartsHunt = ({ onNext }) => {
   const [foundHearts, setFoundHearts] = useState([]);
@@ -37,6 +38,7 @@ const HeartsHunt = ({ onNext }) => {
     if (!foundHearts.includes(id)) {
       const newFound = [...foundHearts, id];
       setFoundHearts(newFound);
+      playCorrect();
       
       confetti({
         particleCount: 20,
@@ -46,6 +48,7 @@ const HeartsHunt = ({ onNext }) => {
       });
 
       if (newFound.length === totalHearts) {
+        playWin();
         setTimeout(() => {
           confetti({
             particleCount: 100,

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import Button from './Button';
+import { playWin, playLose, playWrong } from '../utils/sounds';
 
 const GameCatchButton = ({ onNext }) => {
   const [gameStep, setGameStep] = useState(0);
@@ -96,10 +97,14 @@ const GameCatchButton = ({ onNext }) => {
     } else if (newGuesses.length >= 6) {
       setGameOver(true);
       setGuesses([]);
+      playLose();
+    } else {
+      playWrong();
     }
   };
 
   const triggerWin = () => {
+    playWin();
     confetti({
       particleCount: 150,
       spread: 100,

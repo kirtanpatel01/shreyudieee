@@ -4,7 +4,6 @@ import Background from './components/Background';
 import Countdown from './components/Countdown';
 import WelcomePortal from './components/WelcomePortal';
 import GameCatchButton from './components/GameCatchButton';
-import MemoryQuiz from './components/MemoryQuiz';
 import HeartsHunt from './components/HeartsHunt';
 import GameReaction from './components/GameReaction';
 import FakeHacker from './components/FakeHacker';
@@ -82,10 +81,9 @@ function App() {
         case 1: music = musicMap.welcome; break;
         case 2: music = musicMap.catch; break;
         case 3: music = musicMap.reaction; break;
-        case 4: music = musicMap.quiz; break;
-        case 5: music = musicMap.hunt; break;
-        case 6: music = musicMap.hacker; break;
-        case 7: music = musicMap.reveal; break;
+        case 4: music = musicMap.hunt; break;
+        case 5: music = musicMap.hacker; break;
+        case 6: music = musicMap.reveal; break;
         default: music = musicMap.welcome;
       }
     }
@@ -111,12 +109,10 @@ function App() {
       case 3:
         return <GameReaction onNext={handleNextPage} />;
       case 4:
-        return <MemoryQuiz onNext={handleNextPage} />;
-      case 5:
         return <HeartsHunt onNext={handleNextPage} />;
-      case 6:
+      case 5:
         return <FakeHacker onNext={handleNextPage} />;
-      case 7:
+      case 6:
         return <FinalReveal />;
       default:
         return <WelcomePortal onNext={handleNextPage} />;
@@ -126,7 +122,7 @@ function App() {
   return (
     <div className="relative min-h-screen bg-neutral-900 overflow-hidden font-sans antialiased">
       <Background />
-      <MusicToggle isMuted={isMuted} onToggle={toggleMusic} />
+      {/* <MusicToggle isMuted={isMuted} onToggle={toggleMusic} /> */}
       
       {/* Hidden YouTube Player (sized 1x1 to allow autoplay on mobile) */}
       <iframe

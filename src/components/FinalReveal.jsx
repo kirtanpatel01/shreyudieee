@@ -67,35 +67,13 @@ const FinalReveal = () => {
           </p>
         </motion.div>
 
-        {/* Scrapbook / Polaroid Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {[1, 2, 3].map((i) => (
-            <motion.div
-              key={i}
-              className="bg-white p-4 pb-12 shadow-xl transform"
-              style={{ rotate: i === 1 ? -3 : i === 2 ? 2 : -1 }}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 + i * 0.3, type: "spring" }}
-              whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
-            >
-              <div className="w-full h-48 bg-neutral-200 mb-4 flex items-center justify-center text-neutral-400 text-sm font-sans">
-                Memory {i} Placeholder
-              </div>
-              <div className="text-neutral-800 font-caveat text-2xl">
-                #MomentsWithShreya
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
         <motion.p
           className="text-rose-300/50 text-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5 }}
         >
-          Built with love for Shreya's 18th.
+          Built with ❤️ for Shreya.
         </motion.p>
       </div>
     </div>
