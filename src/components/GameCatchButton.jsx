@@ -4,6 +4,16 @@ import confetti from 'canvas-confetti';
 import Button from './Button';
 import { playWin, playLose, playWrong } from '../utils/sounds';
 
+const heartSounds = [
+  '/sounds/cartoon-character-sneeze.wav',
+  '/sounds/funny-clown-horn.wav',
+  '/sounds/funny-giggling.wav',
+  '/sounds/little-cat-pain-meow.wav',
+  '/sounds/monster-attack-dog-wolf-creature.wav',
+  '/sounds/soft-quick-punch.wav',
+  '/sounds/sweet-kitty-meow.wav'
+];
+
 const GameCatchButton = ({ onNext }) => {
   const [gameStep, setGameStep] = useState(0);
   const [heartsCaught, setHeartsCaught] = useState(0);
@@ -54,6 +64,13 @@ const GameCatchButton = ({ onNext }) => {
 
   const handleCatchHeart = (id) => {
     setFallingHearts((prev) => prev.filter((h) => h.id !== id));
+    
+    // Play unique sound for each heart caught
+    if (heartsCaught < heartSounds.length) {
+      const audio = new Audio(heartSounds[heartsCaught]);
+      audio.play().catch(e => console.error(e));
+    }
+
     const newCount = heartsCaught + 1;
     setHeartsCaught(newCount);
     if (newCount >= 7) { // Increased to 7

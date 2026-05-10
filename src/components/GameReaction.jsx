@@ -2,7 +2,31 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './Button';
 import confetti from 'canvas-confetti';
-import { playHackerBeep, playWin, playCorrect, playWrong } from '../utils/sounds';
+import { playHackerBeep, playWin, playWrong } from '../utils/sounds';
+
+const failMessages = {
+  500: "So close! You almost had it. Try again! 🤏",
+  550: "Not bad, but your grandma reacts faster than this! 👵",
+  600: "Are you sleeping? Wake up! 😴",
+  650: "Internet explorer reacts faster than you. 🌐",
+  700: "You're thinking about food again, aren't you? 🍕",
+  750: "Did you blink? Don't blink! 👀",
+  800: "You are as slow as a turtle on a treadmill. 🐢",
+  850: "Are you sure you're 18? Your reflexes say 80! 👴",
+  900: "My dead battery has more reaction speed. 🔋",
+  950: "One full second? Wow, that's achievement! 🏆 (Not really)",
+  1000: "You're taking your time, aren't you? ⏳",
+  1050: "I could have baked a cake in that time. 🎂",
+  1100: "Are you tapping with your toes? 🦶",
+  1150: "Your brain is still loading... 🧠⏳",
+  1200: "Did you forget to click? 🤔",
+  1250: "You are definitely not a gamer. 🎮❌",
+  1300: "A sloth moves faster than your finger! 🦥",
+  1350: "Are you paralyzed by the pressure? 😱",
+  1400: "You're making me look bad. Click faster! 😠",
+  1450: "Is your finger glued to the table? 🧴",
+  1500: "Did you go for a walk? That took forever! 🚶‍♀️"
+};
 
 const GameReaction = ({ onNext }) => {
   const [state, setState] = useState('idle'); // idle, waiting, ready, clicked, too-early, trolled
@@ -51,7 +75,7 @@ const GameReaction = ({ onNext }) => {
       setState('clicked');
       setAttempts(attempts + 1);
       
-      if (time < 300) {
+      if (time < 500) {
         playWin();
         confetti({
           particleCount: 50,
@@ -59,10 +83,8 @@ const GameReaction = ({ onNext }) => {
           origin: { y: 0.6 },
           colors: ['#10b981', '#34d399'],
         });
-      } else if (time >= 400) {
-        playWrong();
       } else {
-        playCorrect();
+        playWrong();
       }
     } else if (state === 'trolled') {
       clearTimeout(trollTimerRef.current);
@@ -104,10 +126,9 @@ const GameReaction = ({ onNext }) => {
       case 'trolled': return 'Wait for it...';
       case 'too-early': return 'Too early! Wait for green.';
       case 'clicked': 
-        if (reactionTime < 200) return `Godlike! ${reactionTime}ms`;
-        if (reactionTime < 300) return `Great! ${reactionTime}ms`;
-        if (reactionTime < 400) return `Good. ${reactionTime}ms`;
-        return `Slow poke! ${reactionTime}ms`;
+        if (reactionTime < 500) return `Win! ${reactionTime}ms`;
+        const interval = Math.min(1500, Math.floor(reactionTime / 50) * 50);
+        return `${failMessages[interval] || "Wow, that took forever! 🚶‍♀️"} (${reactionTime}ms)`;
       default: return '';
     }
   };
@@ -115,8 +136,8 @@ const GameReaction = ({ onNext }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4">
       <div className="text-center max-w-2xl w-full mb-8">
-        <span className="text-rose-400 text-2xl mb-2 block font-caveat">
-          Game 2: Speed Test
+        <span className="text-rose-400 text-2xl mb-2 block font-buttons">
+          Memory Journey 3/6
         </span>
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">
           Reaction Speed Challenge
@@ -142,10 +163,10 @@ const GameReaction = ({ onNext }) => {
           >
             {getMessage()}
             
-            {state === 'clicked' && reactionTime < 300 && (
+            {state === 'clicked' && reactionTime < 500 && (
               <p className="text-sm font-normal text-emerald-300 mt-2">You are fast! ⚡</p>
             )}
-            {state === 'clicked' && reactionTime >= 300 && (
+            {state === 'clicked' && reactionTime >= 500 && (
               <p className="text-sm font-normal text-rose-300 mt-2">I know you can do better. 😉</p>
             )}
           </motion.div>
@@ -159,7 +180,7 @@ const GameReaction = ({ onNext }) => {
           </Button>
         )}
         
-        {state === 'clicked' && reactionTime < 400 && (
+        {state === 'clicked' && reactionTime < 500 && (
           <Button
             onClick={onNext}
             className="bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
@@ -169,9 +190,9 @@ const GameReaction = ({ onNext }) => {
         )}
       </div>
       
-      {state === 'clicked' && reactionTime >= 400 && (
+      {state === 'clicked' && reactionTime >= 500 && (
         <p className="text-rose-300/70 mt-4 text-sm">
-          Get under 400ms to proceed!
+          Get under 500ms to proceed!
         </p>
       )}
     </div>
