@@ -1,10 +1,24 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import Button from './Button';
+import React from "react";
+import { motion } from "framer-motion";
+import Button from "./Button";
 
 const MotionButton = motion(Button);
 
 const WelcomePortal = ({ onNext }) => {
+  const photos = [
+    {
+      name: "bakudieee",
+      src: "/bakudieee.jpg",
+    },
+    {
+      name: "cutieee",
+      src: "/cutieee.jpg",
+    },
+    {
+      name: "shreyudieee",
+      src: "/shreyudieee.jpg",
+    },
+  ];
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4">
       <motion.div
@@ -21,9 +35,9 @@ const WelcomePortal = ({ onNext }) => {
         >
           Memory Journey 1/6
         </motion.span>
-        
+
         <motion.h1
-          className="text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-rose-300 font-heading"
+          className="text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-linear-to-r from-rose-300 via-pink-200 to-rose-300 font-heading"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
@@ -37,14 +51,15 @@ const WelcomePortal = ({ onNext }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
         >
-          Welcome to your personal interactive story. Today, we celebrate 18 years of you.
+          Welcome to your personal interactive story. Today, we celebrate 18
+          years of you.
         </motion.p>
 
         {/* Floating Photo Placeholders */}
         <div className="flex justify-center gap-6 mb-16 flex-wrap relative">
           {/* Cute elements: floating hearts */}
           <motion.div
-            className="absolute -top-10 right-10 text-rose-400 text-xl"
+            className="absolute -top-16 right-0 text-rose-400 text-xl"
             animate={{ y: [0, -10, 0], opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
@@ -58,25 +73,31 @@ const WelcomePortal = ({ onNext }) => {
             ♥
           </motion.div>
 
-          {[1, 2, 3].map((i) => (
-            <motion.div
-              key={i}
-              className="w-32 h-40 md:w-40 md:h-52 bg-neutral-800/60 backdrop-blur-md border border-rose-500/20 rounded-xl p-2 flex flex-col items-center justify-center"
-              initial={{ opacity: 0, y: 50, rotate: i % 2 === 0 ? 5 : -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5 + i * 0.2, type: "spring" }}
-              whileHover={{ scale: 1.05, rotate: 0 }}
-            >
-              <div className="w-full h-full bg-rose-500/10 rounded-lg flex items-center justify-center text-rose-300/30 text-sm font-sans">
-                Photo {i}
-              </div>
-              <div className="h-4 w-12 bg-rose-500/20 rounded mt-2" />
-            </motion.div>
-          ))}
+          <div className="flex gap-10 flex-wrap">
+            {photos.map((photo, i) => (
+              <motion.div
+                key={photo.name}
+                className="max-w-44 bg-neutral-800/60 backdrop-blur-md border border-rose-500/20 rounded-xl flex flex-col items-center justify-center"
+                initial={{ opacity: 0, y: 50, rotate: i % 2 === 0 ? 5 : -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.2, type: "spring" }}
+                whileHover={{ scale: 1.05, rotate: 0 }}
+              >
+                <img
+                  src={photo.src}
+                  alt={photo.name}
+                  className="rounded-t-xl h-full w-full object-cover"
+                />
+                <div className="px-2 bg-rose-500/20 rounded my-2">
+                  {photo.name}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         <MotionButton
-          className="bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
+          className="bg-linear-to-r from-rose-500 to-pink-500 text-white hover:shadow-lg hover:shadow-rose-500/30"
           onClick={onNext}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
