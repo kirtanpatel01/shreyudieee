@@ -7,13 +7,16 @@ const GameCatchButton = ({ onNext }) => {
   const [gameStep, setGameStep] = useState(0);
   const [heartsCaught, setHeartsCaught] = useState(0);
   
-  // Step 2 (Whack-a-Mole) state
-  const [whackCount, setWhackCount] = useState(0);
-  const [molePos, setMolePos] = useState({ left: '50%', top: '50%' });
+  // Step 2 (Whack-a-Mole with Traps) state
+  const [whackScore, setWhackScore] = useState(0);
+  const [targetScore] = useState(7); // Harder
+  const [mole, setMole] = useState({ left: '50%', top: '50%', type: 'good' });
   
-  // Step 3 state
-  const [nextLetterIndex, setNextLetterIndex] = useState(0);
-  const letters = ['S', 'H', 'R', 'E', 'Y', 'A'];
+  // Step 3 (Wordle) state
+  const targetWord = "BAKUDI";
+  const [guesses, setGuesses] = useState([]);
+  const [currentGuess, setCurrentGuess] = useState('');
+  const [gameOver, setGameOver] = useState(false);
   
   // Falling hearts state (Step 0)
   const [fallingHearts, setFallingHearts] = useState([]);
@@ -27,10 +30,23 @@ const GameCatchButton = ({ onNext }) => {
           {
             id: Math.random(),
             left: `${Math.random() * 80 + 10}%`,
-            duration: Math.random() * 2 + 2,
+            duration: Math.random() * 2 + 1.5, // Faster
           },
         ]);
-      }, 800);
+      }, 600); // Faster spawn
+      return () => clearInterval(interval);
+    }
+  }, [gameStep]);
+
+  // Step 2: Whack-a-Mole loop
+  useEffect(() => {
+    if (gameStep === 1) {
+      const interval = setInterval(() => {
+        const left = Math.random() > 0.5 ? `${Math.random() * 30 + 5}%` : `${Math.random() * 30 + 65}%`;
+        const top = Math.random() > 0.5 ? `${Math.random() * 30 + 5}%` : `${Math.random() * 30 + 65}%`;
+        const type = Math.random() > 0.3 ? 'good' : 'bad'; // 30% chance of trap
+        setMole({ left, top, type });
+      }, 1000); // Moves every second
       return () => clearInterval(interval);
     }
   }, [gameStep]);
@@ -39,34 +55,48 @@ const GameCatchButton = ({ onNext }) => {
     setFallingHearts((prev) => prev.filter((h) => h.id !== id));
     const newCount = heartsCaught + 1;
     setHeartsCaught(newCount);
-    if (newCount >= 5) {
+    if (newCount >= 7) { // Increased to 7
       setTimeout(() => setGameStep(1), 500);
     }
   };
 
-  const handleWhackMole = () => {
-    const newCount = whackCount + 1;
-    setWhackCount(newCount);
-    
-    if (newCount >= 5) {
-      setTimeout(() => setGameStep(2), 500);
-    } else {
-      // Pick a new random position avoiding the center where the text is
-      const left = Math.random() > 0.5 ? `${Math.random() * 30 + 5}%` : `${Math.random() * 30 + 65}%`;
-      const top = Math.random() > 0.5 ? `${Math.random() * 30 + 5}%` : `${Math.random() * 30 + 65}%`;
-      setMolePos({ left, top });
-    }
-  };
-
-  const handleLetterClick = (letter) => {
-    if (letter === letters[nextLetterIndex]) {
-      const next = nextLetterIndex + 1;
-      setNextLetterIndex(next);
-      if (next >= letters.length) {
-        triggerWin();
+  const handleMoleClick = () => {
+    if (mole.type === 'good') {
+      const newScore = whackScore + 1;
+      setWhackScore(newScore);
+      if (newScore >= targetScore) {
+        setTimeout(() => setGameStep(2), 500);
       }
     } else {
-      setNextLetterIndex(0);
+      // Hit a trap! Reset score.
+      setWhackScore(0);
+      alert("Oops! You tapped a broken heart! Score reset.");
+    }
+    // Move immediately on click
+    const left = Math.random() > 0.5 ? `${Math.random() * 30 + 5}%` : `${Math.random() * 30 + 65}%`;
+    const top = Math.random() > 0.5 ? `${Math.random() * 30 + 5}%` : `${Math.random() * 30 + 65}%`;
+    setMole({ left, top, type: Math.random() > 0.3 ? 'good' : 'bad' });
+  };
+
+  const handleWordleSubmit = (e) => {
+    e.preventDefault();
+    const guess = currentGuess.toUpperCase();
+    
+    if (guess.length !== 6) {
+      alert("Guess must be 6 letters!");
+      return;
+    }
+    
+    const newGuesses = [...guesses, guess];
+    setGuesses(newGuesses);
+    setCurrentGuess('');
+    
+    if (guess === targetWord) {
+      triggerWin();
+    } else if (newGuesses.length >= 6) {
+      setGameOver(true);
+      alert("Game Over! The word was SHREYA. Resetting tries...");
+      setGuesses([]);
     }
   };
 
@@ -80,13 +110,12 @@ const GameCatchButton = ({ onNext }) => {
     setTimeout(onNext, 1000);
   };
 
-  // Randomize letters for Step 3
-  const [shuffledLetters, setShuffledLetters] = useState([]);
-  useEffect(() => {
-    if (gameStep === 2) {
-      setShuffledLetters([...letters].sort(() => Math.random() - 0.5));
-    }
-  }, [gameStep]);
+  const getLetterColor = (guess, index) => {
+    const letter = guess[index];
+    if (targetWord[index] === letter) return 'bg-rose-500 text-white'; // Green equivalent
+    if (targetWord.includes(letter)) return 'bg-yellow-500 text-white'; // Yellow equivalent
+    return 'bg-neutral-700 text-neutral-400'; // Gray equivalent
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-white relative z-10 px-4 bg-transparent overflow-hidden">
@@ -122,15 +151,15 @@ const GameCatchButton = ({ onNext }) => {
             transition={{ duration: 0.3 }}
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 1: The Reflex Test</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Catch 5 Falling Hearts!</h2>
-            <p className="text-rose-200/60 mb-8 font-sans font-light">Tap them before they fall off the screen.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Catch 7 Falling Hearts!</h2>
+            <p className="text-rose-200/60 mb-8 font-sans font-light">They are falling faster now.</p>
             <div className="text-5xl font-bold text-rose-300 font-heading">
-              {heartsCaught} / 5
+              {heartsCaught} / 7
             </div>
           </motion.div>
         )}
 
-        {/* STEP 1: WHACK A MOLE */}
+        {/* STEP 1: WHACK A MOLE WITH TRAPS */}
         {gameStep === 1 && (
           <motion.div
             key="step1"
@@ -141,27 +170,30 @@ const GameCatchButton = ({ onNext }) => {
             transition={{ duration: 0.3 }}
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 2: The Speed Test</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Tap the Teleporting Heart!</h2>
-            <p className="text-rose-200/60 mb-12 font-sans font-light">Tap it 5 times. It's fast!</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Avoid the Broken Hearts!</h2>
+            <p className="text-rose-200/60 mb-12 font-sans font-light">Tap ❤️ to score. Avoid 💔 or score resets!</p>
             
             <div className="text-5xl font-bold text-rose-300 font-heading mb-8">
-              {whackCount} / 5
+              {whackScore} / {targetScore}
             </div>
 
             <motion.div
+              key={`${mole.left}-${mole.top}`}
               className="text-5xl cursor-pointer select-none absolute"
-              style={{ left: molePos.left, top: molePos.top }}
-              onClick={handleWhackMole}
-              onTouchStart={handleWhackMole}
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 0.2 }}
+              style={{ left: mole.left, top: mole.top }}
+              onClick={handleMoleClick}
+              onTouchStart={handleMoleClick}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              transition={{ type: "spring", stiffness: 500 }}
             >
-              ❤️
+              {mole.type === 'good' ? '❤️' : '💔'}
             </motion.div>
           </motion.div>
         )}
 
-        {/* STEP 2: SPELL THE NAME */}
+        {/* STEP 2: WORDLE */}
         {gameStep === 2 && (
           <motion.div
             key="step2"
@@ -172,32 +204,48 @@ const GameCatchButton = ({ onNext }) => {
             transition={{ duration: 0.3 }}
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 3: The Knowledge Test</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Spell Her Name in Order</h2>
-            <p className="text-rose-200/60 mb-6 font-sans font-light">Tap the letters in the correct order.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Guess the 6-Letter Word</h2>
+            <p className="text-rose-200/60 mb-6 font-sans font-light">It's a special person's name!</p>
             
-            <div className="flex gap-4 flex-wrap justify-center mb-8">
-              {shuffledLetters.map((letter, index) => {
-                const isCorrect = letters.indexOf(letter) < nextLetterIndex;
+            {/* Wordle Grid */}
+            <div className="flex flex-col gap-2 mb-6">
+              {[0, 1, 2, 3, 4, 5].map((row) => {
+                const guess = guesses[row] || '';
                 return (
-                  <motion.div
-                    key={index}
-                    className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold font-heading cursor-pointer border ${
-                      isCorrect 
-                        ? 'bg-rose-500 text-white border-rose-400' 
-                        : 'bg-neutral-800 text-rose-100 border-rose-500/20'
-                    }`}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => handleLetterClick(letter)}
-                  >
-                    {letter}
-                  </motion.div>
+                  <div key={row} className="flex gap-2">
+                    {[0, 1, 2, 3, 4, 5].map((col) => {
+                      const letter = guess[col] || '';
+                      const colorClass = guesses[row] ? getLetterColor(guess, col) : 'bg-neutral-800 border border-rose-500/10';
+                      return (
+                        <div
+                          key={col}
+                          className={`w-10 h-10 flex items-center justify-center text-xl font-bold rounded-md font-heading ${colorClass}`}
+                        >
+                          {letter}
+                        </div>
+                      );
+                    })}
+                  </div>
                 );
               })}
             </div>
 
-            <div className="text-sm text-rose-300/50 font-sans">
-              Next letter needed: <span className="text-rose-300 font-bold">{letters[nextLetterIndex]}</span>
-            </div>
+            <form onSubmit={handleWordleSubmit} className="flex flex-col gap-4 w-full">
+              <input
+                type="text"
+                className="bg-neutral-800/50 border border-rose-500/20 rounded-xl px-4 py-3 text-center text-white focus:outline-none focus:border-rose-500 font-sans uppercase"
+                placeholder="Type your guess..."
+                value={currentGuess}
+                onChange={(e) => setCurrentGuess(e.target.value.slice(0, 6))}
+                maxLength={6}
+              />
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-rose-500 to-pink-500 text-white py-3 rounded-xl hover:shadow-lg hover:shadow-rose-500/30 transition-shadow font-buttons"
+              >
+                Submit Guess
+              </Button>
+            </form>
           </motion.div>
         )}
       </AnimatePresence>
