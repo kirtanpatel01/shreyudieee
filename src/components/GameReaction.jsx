@@ -142,7 +142,7 @@ const GameReaction = ({ onNext }) => {
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">
           Reaction Speed Challenge
         </h2>
-        <p className="text-rose-200/60 mb-6 font-light">
+        <p className="text-rose-200/60 mb-6 ">
           Click the area when it turns green. Let's see how fast you are!
         </p>
       </div>

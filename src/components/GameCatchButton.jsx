@@ -179,7 +179,7 @@ const GameCatchButton = ({ onNext }) => {
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 1: The Reflex Test</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Catch 7 Falling Hearts!</h2>
-            <p className="text-rose-200/60 mb-8 font-sans font-light">They are falling faster now.</p>
+            <p className="text-rose-200/60 mb-8 font-sans ">They are falling faster now.</p>
             <div className="text-5xl font-bold text-rose-300 font-heading">
               {heartsCaught} / 7
             </div>
@@ -198,7 +198,7 @@ const GameCatchButton = ({ onNext }) => {
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 2: The Speed Test</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Avoid the Broken Hearts!</h2>
-            <p className="text-rose-200/60 mb-12 font-sans font-light">Tap ❤️ to score. Avoid 💔 or score resets!</p>
+            <p className="text-rose-200/60 mb-12 font-sans ">Tap ❤️ to score. Avoid 💔 or score resets!</p>
             
             <div className="text-5xl font-bold text-rose-300 font-heading mb-8">
               {whackScore} / {targetScore}
@@ -232,7 +232,7 @@ const GameCatchButton = ({ onNext }) => {
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 3: The Knowledge Test</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Guess the 6-Letter Word</h2>
-            <p className="text-rose-200/60 mb-4 font-sans font-light">It's a special person's name!</p>
+            <p className="text-rose-200/60 mb-4 font-sans ">It's a special person's name!</p>
             
             {/* Color Instructions */}
             <div className="flex gap-4 justify-center text-xs mb-6 text-rose-200/80">

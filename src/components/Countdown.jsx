@@ -92,7 +92,7 @@ const Countdown = ({ onUnlock }) => {
         </div>
 
         <motion.p
-          className="text-rose-200/70 text-lg font-light font-sans"
+          className="text-rose-200/70 text-lg  font-sans"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
@@ -111,13 +111,13 @@ const Countdown = ({ onUnlock }) => {
       </div>
 
       {/* Small Unlock Button */}
-      <Button
+      {/* <Button
         onClick={onUnlock}
         className="absolute bottom-6 right-6 text-rose-500/30 hover:text-rose-500/80 bg-transparent p-0 flex items-center gap-1"
       >
         <span className="text-lg">♥</span>
         <span>Unlock</span>
-      </Button>
+      </Button> */}
     </div>
   );
 };

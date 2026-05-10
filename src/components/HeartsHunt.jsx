@@ -70,7 +70,7 @@ const HeartsHunt = ({ onNext }) => {
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">
           Find the Hidden Hearts
         </h2>
-        <p className="text-rose-200/60 mb-2 font-light font-sans">
+        <p className="text-rose-200/60 mb-2  font-sans">
           There are {totalHearts} hearts hidden on this page. Find them all to proceed.
         </p>
         <div className="text-rose-300 font-medium font-sans mb-4">

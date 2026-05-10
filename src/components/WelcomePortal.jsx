@@ -61,7 +61,7 @@ const WelcomePortal = ({ onNext }) => {
         </motion.h1>
 
         <motion.p
-          className="text-rose-100/80 text-lg md:text-xl font-light mb-12 max-w-2xl mx-auto font-sans"
+          className="text-rose-100/80 text-lg md:text-xl  mb-12 max-w-2xl mx-auto font-sans"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
