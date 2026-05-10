@@ -5,7 +5,6 @@ import Countdown from './components/Countdown';
 import WelcomePortal from './components/WelcomePortal';
 import GameCatchButton from './components/GameCatchButton';
 import GameReaction from './components/GameReaction';
-import GameScratchCard from './components/GameScratchCard';
 import FakeHacker from './components/FakeHacker';
 import FinalReveal from './components/FinalReveal';
 import MusicToggle from './components/MusicToggle';
@@ -80,9 +79,8 @@ function App() {
         case 1: music = musicMap.welcome; break;
         case 2: music = musicMap.catch; break;
         case 3: music = musicMap.reaction; break;
-        case 4: music = musicMap.scratch; break;
-        case 5: music = musicMap.hacker; break;
-        case 6: music = musicMap.reveal; break;
+        case 4: music = musicMap.hacker; break;
+        case 5: music = musicMap.reveal; break;
         default: music = musicMap.welcome;
       }
     }
@@ -108,10 +106,8 @@ function App() {
       case 3:
         return <GameReaction onNext={handleNextPage} />;
       case 4:
-        return <GameScratchCard onNext={handleNextPage} />;
-      case 5:
         return <FakeHacker onNext={handleNextPage} />;
-      case 6:
+      case 5:
         return <FinalReveal />;
       default:
         return <WelcomePortal onNext={handleNextPage} />;

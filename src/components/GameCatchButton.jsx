@@ -95,7 +95,7 @@ const GameCatchButton = ({ onNext }) => {
       triggerWin();
     } else if (newGuesses.length >= 6) {
       setGameOver(true);
-      alert("Game Over! The word was SHREYA. Resetting tries...");
+      alert(`Game Over! The word was ${targetWord}. Resetting tries...`);
       setGuesses([]);
     }
   };
@@ -108,6 +108,12 @@ const GameCatchButton = ({ onNext }) => {
       colors: ['#fda4af', '#f472b6', '#ec4899'],
     });
     setTimeout(onNext, 1000);
+  };
+
+  const handleResetWordle = () => {
+    setGuesses([]);
+    setCurrentGuess('');
+    setGameOver(false);
   };
 
   const getLetterColor = (guess, index) => {
@@ -205,7 +211,23 @@ const GameCatchButton = ({ onNext }) => {
           >
             <span className="text-rose-400 text-xl mb-2 font-buttons">Step 3: The Knowledge Test</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-rose-100 font-heading">Guess the 6-Letter Word</h2>
-            <p className="text-rose-200/60 mb-6 font-sans font-light">It's a special person's name!</p>
+            <p className="text-rose-200/60 mb-4 font-sans font-light">It's a special person's name!</p>
+            
+            {/* Color Instructions */}
+            <div className="flex gap-4 justify-center text-xs mb-6 text-rose-200/80">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-rose-500 rounded-sm"></div>
+                <span>Correct</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-yellow-500 rounded-sm"></div>
+                <span>Wrong spot</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-neutral-700 rounded-sm"></div>
+                <span>Not in word</span>
+              </div>
+            </div>
             
             {/* Wordle Grid */}
             <div className="flex flex-col gap-2 mb-6">
@@ -239,12 +261,21 @@ const GameCatchButton = ({ onNext }) => {
                 onChange={(e) => setCurrentGuess(e.target.value.slice(0, 6))}
                 maxLength={6}
               />
-              <Button
-                type="submit"
-                className="bg-gradient-to-r from-rose-500 to-pink-500 text-white py-3 rounded-xl hover:shadow-lg hover:shadow-rose-500/30 transition-shadow font-buttons"
-              >
-                Submit Guess
-              </Button>
+              <div className="flex gap-2 w-full">
+                <Button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-rose-500 to-pink-500 text-white py-3 rounded-xl hover:shadow-lg hover:shadow-rose-500/30 transition-shadow font-buttons"
+                >
+                  Submit Guess
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleResetWordle}
+                  className="bg-neutral-700 text-white py-3 px-6 rounded-xl hover:bg-neutral-600 transition-colors font-buttons"
+                >
+                  Reset
+                </Button>
+              </div>
             </form>
           </motion.div>
         )}
