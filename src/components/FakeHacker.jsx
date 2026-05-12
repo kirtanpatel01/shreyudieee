@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Button from './Button';
 import { playHackerBeep, playWin } from '../utils/sounds';
 
-const FakeHacker = ({ onNext }) => {
+const FakeHacker = ({ onNext, onWin }) => {
   const [logs, setLogs] = useState([]);
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
@@ -39,6 +39,7 @@ const FakeHacker = ({ onNext }) => {
         clearInterval(progressInterval);
         setIsDone(true);
         playWin();
+        onWin();
         return 100;
       });
     }, 100);

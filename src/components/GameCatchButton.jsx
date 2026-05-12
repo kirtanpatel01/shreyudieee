@@ -14,7 +14,7 @@ const heartSounds = [
   '/sounds/sweet-kitty-meow.wav'
 ];
 
-const GameCatchButton = ({ onNext }) => {
+const GameCatchButton = ({ onNext, onWin, onLoss }) => {
   const [gameStep, setGameStep] = useState(0);
   const [heartsCaught, setHeartsCaught] = useState(0);
   
@@ -115,6 +115,7 @@ const GameCatchButton = ({ onNext }) => {
       setGameOver(true);
       setGuesses([]);
       playLose();
+      onLoss();
     } else {
       playWrong();
     }
@@ -122,6 +123,7 @@ const GameCatchButton = ({ onNext }) => {
 
   const triggerWin = () => {
     playWin();
+    onWin();
     confetti({
       particleCount: 150,
       spread: 100,

@@ -28,7 +28,7 @@ const failMessages = {
   1500: "Did you go for a walk? That took forever! 🚶‍♀️"
 };
 
-const GameReaction = ({ onNext }) => {
+const GameReaction = ({ onNext, onWin, onLoss }) => {
   const [state, setState] = useState('idle'); // idle, waiting, ready, clicked, too-early, trolled
   const [startTime, setStartTime] = useState(0);
   const [reactionTime, setReactionTime] = useState(null);
@@ -69,6 +69,7 @@ const GameReaction = ({ onNext }) => {
       setState('too-early');
       setAttempts(attempts + 1);
       playWrong();
+      onLoss();
     } else if (state === 'ready') {
       const time = Date.now() - startTime;
       setReactionTime(time);
@@ -77,6 +78,7 @@ const GameReaction = ({ onNext }) => {
       
       if (time < 500) {
         playWin();
+        onWin();
         confetti({
           particleCount: 50,
           spread: 60,
@@ -85,12 +87,14 @@ const GameReaction = ({ onNext }) => {
         });
       } else {
         playWrong();
+        onLoss();
       }
     } else if (state === 'trolled') {
       clearTimeout(trollTimerRef.current);
       setState('too-early');
       setAttempts(attempts + 1);
       playWrong();
+      onLoss();
     }
   };
 

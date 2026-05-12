@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti';
 import Button from './Button';
 import { playWin } from '../utils/sounds';
 
-const HeartsHunt = ({ onNext }) => {
+const HeartsHunt = ({ onNext, onWin, onLoss }) => {
   const [foundHearts, setFoundHearts] = useState([]);
   const [activeHeart, setActiveHeart] = useState(null);
   const [showQuitMsg, setShowQuitMsg] = useState(false);
@@ -48,6 +48,7 @@ const HeartsHunt = ({ onNext }) => {
 
       if (newFound.length === totalHearts) {
         playWin();
+        onWin();
         setTimeout(() => {
           confetti({
             particleCount: 100,
@@ -80,7 +81,10 @@ const HeartsHunt = ({ onNext }) => {
         {/* Quit Button */}
         <Button
           className="text-rose-400/50 hover:text-rose-400 bg-transparent border border-rose-500/20"
-          onClick={() => setShowQuitMsg(true)}
+          onClick={() => {
+            setShowQuitMsg(true);
+            onLoss();
+          }}
         >
           I can't find them!
         </Button>

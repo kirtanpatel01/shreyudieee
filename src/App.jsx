@@ -1,128 +1,91 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Routes, Route, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import Background from './components/Background';
-import Countdown from './components/Countdown';
 import WelcomePortal from './components/WelcomePortal';
 import GameCatchButton from './components/GameCatchButton';
 import HeartsHunt from './components/HeartsHunt';
 import GameReaction from './components/GameReaction';
 import FakeHacker from './components/FakeHacker';
 import FinalReveal from './components/FinalReveal';
-import MusicToggle from './components/MusicToggle';
+import Button from './components/Button';
+
+const musicMap = {
+  welcome: "5gIpqS-Qpzw",
+  catch: "ekr2nIex040",
+  quiz: "a7fzkqLozwA",
+  hunt: "62TrmUvQGjo",
+  reaction: "a7fzkqLozwA",
+  hacker: "WGXmDsOwW4k",
+  reveal: "GxldQ9eX2wo",
+};
+
+const routesOrder = ['/', '/catch', '/reaction', '/hunt', '/hacker', '/reveal'];
+const gameKeys = {
+  '/': 'welcome',
+  '/catch': 'catch',
+  '/reaction': 'reaction',
+  '/hunt': 'hunt',
+  '/hacker': 'hacker',
+  '/reveal': 'reveal'
+};
 
 function App() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [devMode, setDevMode] = useState(() => {
-    return localStorage.getItem('devMode') === 'true';
-  });
-  
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isMuted, setIsMuted] = useState(true);
-  
-  const musicMap = {
-    countdown: "IpFX2vq8HKw", // Replace with Blue ID
-    welcome: "5gIpqS-Qpzw", // Replace with Vhalam Aavo Ne ID
-    catch: "ekr2nIex040", // Replace with APT ID
-    quiz: "a7fzkqLozwA", // Replace with I like me better ID
-    hunt: "62TrmUvQGjo", // Replace with Cupid ID
-    reaction: "a7fzkqLozwA", // Reaction game music
-    hacker: "WGXmDsOwW4k", // Replace with Dhoom Again ID
-    reveal: "GxldQ9eX2wo", // Replace with Until I Found You ID
-  };
-
   const [currentMusic, setCurrentMusic] = useState(musicMap.welcome);
 
-  const targetDate = new Date('2026-05-11T00:00:00').getTime();
+  const [progress, setProgress] = useState(() => {
+    const saved = localStorage.getItem('progress');
+    return saved ? JSON.parse(saved) : {
+      welcome: { wins: 1, losses: 0 },
+      catch: { wins: 0, losses: 0 },
+      reaction: { wins: 0, losses: 0 },
+      hunt: { wins: 0, losses: 0 },
+      hacker: { wins: 0, losses: 0 },
+      reveal: { wins: 1, losses: 0 }
+    };
+  });
 
   useEffect(() => {
-    const checkUnlock = () => {
-      const now = new Date().getTime();
-      if (now >= targetDate || devMode) {
-        setIsUnlocked(true);
-      }
-    };
+    localStorage.setItem('progress', JSON.stringify(progress));
+  }, [progress]);
 
-    checkUnlock();
-    const interval = setInterval(checkUnlock, 1000);
+  const recordWin = (gameKey) => {
+    setProgress(prev => ({
+      ...prev,
+      [gameKey]: { ...prev[gameKey], wins: prev[gameKey].wins + 1 }
+    }));
+  };
 
-    // Keyboard shortcut for dev mode: Shift + S
-    const handleKeyDown = (e) => {
-      if (e.shiftKey && e.key === 'S') {
-        const newDevMode = !devMode;
-        setDevMode(newDevMode);
-        localStorage.setItem('devMode', String(newDevMode));
-        if (newDevMode) {
-          setIsUnlocked(true);
-        } else {
-          // Re-check if it should be locked
-          const now = new Date().getTime();
-          if (now < targetDate) {
-            setIsUnlocked(false);
-            setCurrentPage(1);
-          }
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [devMode, targetDate]);
+  const recordLoss = (gameKey) => {
+    setProgress(prev => ({
+      ...prev,
+      [gameKey]: { ...prev[gameKey], losses: prev[gameKey].losses + 1 }
+    }));
+  };
 
   useEffect(() => {
+    const path = location.pathname;
     let music = musicMap.welcome;
-    if (!isUnlocked) {
-      music = musicMap.countdown;
-    } else {
-      switch (currentPage) {
-        case 1: music = musicMap.welcome; break;
-        case 2: music = musicMap.catch; break;
-        case 3: music = musicMap.reaction; break;
-        case 4: music = musicMap.hunt; break;
-        case 5: music = musicMap.hacker; break;
-        case 6: music = musicMap.reveal; break;
-        default: music = musicMap.welcome;
-      }
+    switch (path) {
+      case '/': music = musicMap.welcome; break;
+      case '/catch': music = musicMap.catch; break;
+      case '/reaction': music = musicMap.reaction; break;
+      case '/hunt': music = musicMap.hunt; break;
+      case '/hacker': music = musicMap.hacker; break;
+      case '/reveal': music = musicMap.reveal; break;
+      default: music = musicMap.welcome;
     }
     setCurrentMusic(music);
-  }, [isUnlocked, currentPage]);
-
-
-
-  const toggleMusic = () => {
-    setIsMuted(!isMuted);
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 1:
-        return <WelcomePortal onNext={handleNextPage} />;
-      case 2:
-        return <GameCatchButton onNext={handleNextPage} />;
-      case 3:
-        return <HeartsHunt onNext={handleNextPage} />;
-      case 4:
-        return <FakeHacker onNext={handleNextPage} />;
-      case 5:
-        return <FinalReveal />;
-      default:
-        return <WelcomePortal onNext={handleNextPage} />;
-    }
-  };
+  }, [location.pathname]);
 
   return (
     <div className="relative min-h-screen bg-neutral-900 overflow-hidden font-sans antialiased">
       <Background />
-      {/* <MusicToggle isMuted={isMuted} onToggle={toggleMusic} /> */}
       
-      {/* Hidden YouTube Player (sized 1x1 to allow autoplay on mobile) */}
+      {/* Hidden YouTube Player */}
       <iframe
         src={`https://www.youtube.com/embed/${currentMusic}?autoplay=1&loop=1&playlist=${currentMusic}&mute=${isMuted ? 1 : 0}&enablejsapi=1`}
         allow="autoplay"
@@ -130,37 +93,100 @@ function App() {
         title="Music Player"
       />
 
-      {/* Dev Mode Indicator */}
-      {devMode && (
-        <div className="fixed bottom-4 left-4 z-50 text-xs text-rose-300/50 bg-neutral-800/80 px-2 py-1 rounded border border-rose-500/20">
-          Dev Mode Active (Press Shift + S to toggle)
-        </div>
-      )}
-
-      <AnimatePresence mode="wait">
-        {!isUnlocked ? (
-          <motion.div
-            key="countdown"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 1 }}
-          >
-            <Countdown onUnlock={() => setIsUnlocked(true)} />
-          </motion.div>
-        ) : (
-          <motion.div
-            key={`page-${currentPage}`}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 0.8, type: "spring" }}
-          >
-            {renderPage()}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Routes>
+        <Route path="/" element={<Layout progress={progress} />}>
+          <Route index element={<WelcomePortal onNext={() => navigate('/catch')} />} />
+          <Route path="catch" element={<GameCatchButton onWin={() => recordWin('catch')} onLoss={() => recordLoss('catch')} onNext={() => navigate('/reaction')} />} />
+          <Route path="reaction" element={<GameReaction onWin={() => recordWin('reaction')} onLoss={() => recordLoss('reaction')} onNext={() => navigate('/hunt')} />} />
+          <Route path="hunt" element={<HeartsHunt onWin={() => recordWin('hunt')} onLoss={() => recordLoss('hunt')} onNext={() => navigate('/hacker')} />} />
+          <Route path="hacker" element={<FakeHacker onWin={() => recordWin('hacker')} onLoss={() => recordLoss('hacker')} onNext={() => navigate('/reveal')} />} />
+          <Route path="reveal" element={<FinalReveal />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
+
+const Layout = ({ progress }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPath = location.pathname;
+  const currentIndex = routesOrder.indexOf(currentPath);
+  
+  const currentGameKey = gameKeys[currentPath];
+  const hasWon = progress[currentGameKey]?.wins > 0 || currentPath === '/' || currentPath === '/reveal';
+  
+  const handleNext = () => {
+    if (currentIndex < routesOrder.length - 1) {
+      navigate(routesOrder[currentIndex + 1]);
+    }
+  };
+  
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      navigate(routesOrder[currentIndex - 1]);
+    }
+  };
+  
+  const handleSkip = () => {
+    if (currentPath === '/reaction') {
+      navigate('/hunt');
+    }
+  };
+
+  return (
+    <div className="relative min-h-screen">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          transition={{ duration: 0.5 }}
+          className="pb-20"
+        >
+          <Outlet />
+        </motion.div>
+      </AnimatePresence>
+      
+      {/* Navigation Buttons */}
+      <div className="fixed bottom-4 left-0 right-0 flex justify-between px-4 z-50">
+        <Button 
+          onClick={handlePrev} 
+          disabled={currentIndex === 0}
+          className={`bg-neutral-800/80 border border-neutral-700 text-white ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-700'}`}
+        >
+          Previous
+        </Button>
+        
+        <div className="flex gap-2">
+          {currentPath === '/reaction' && (
+            <Button 
+              onClick={handleSkip}
+              className="bg-yellow-600/80 border border-yellow-700 text-white hover:bg-yellow-500"
+            >
+              Skip
+            </Button>
+          )}
+          
+          <Button 
+            onClick={handleNext} 
+            disabled={!hasWon || currentIndex === routesOrder.length - 1}
+            className={`${hasWon ? 'bg-linear-to-r from-rose-500 to-pink-500 hover:shadow-lg hover:shadow-rose-500/30' : 'bg-neutral-700 text-neutral-500 cursor-not-allowed'} text-white`}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+      
+      {/* Stats Display */}
+      {currentGameKey && currentGameKey !== 'welcome' && currentGameKey !== 'reveal' && (
+        <div className="fixed top-4 left-4 z-50 text-xs text-rose-300/70 bg-neutral-800/80 px-2 py-1 rounded border border-rose-500/20">
+          Wins: {progress[currentGameKey]?.wins || 0} | Losses: {progress[currentGameKey]?.losses || 0}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default App;
